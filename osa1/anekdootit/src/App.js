@@ -6,6 +6,30 @@ const Button = ({handleClick, text}) => (
   </button>
 )
 
+const Winner = ({anecdotes, points}) => {
+  let highest = 0
+  let index = 0
+  points.forEach((x, i) => {
+    if (x > highest) {
+      highest = x
+      index = i
+    }
+  })
+  if (highest === 0) {
+    return (
+      <div></div>
+    )
+  }
+  return (
+    <div>
+      <h1>Anecdote with the most votes</h1>
+      {anecdotes[index]}
+      <p></p>
+      has {highest} votes
+    </div>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -28,12 +52,15 @@ const App = () => {
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}
       <p></p>
-      Votes {points[selected]}
+      has {points[selected]} votes
       <p></p>
       <Button handleClick={() => setSelected(Math.floor(Math.random() * anecdotes.length))} text="next anecdote" />
       <Button handleClick={() => handlePoints(selected)} text="vote" />
+      <p></p>
+      <Winner anecdotes={anecdotes} points={points} />
     </div>
   )
 }
