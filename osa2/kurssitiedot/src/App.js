@@ -1,56 +1,5 @@
 import React from 'react'
-
-const Course = ({courses}) => {
-  return (
-    <>
-      {courses.map(course => {
-      return (
-      <>
-      <Header course={course.name} />
-      <Content parts={course.parts} />
-      <Total parts={course.parts} />
-      </>
-      )
-      })}
-    </>
-  )
-}
-
-const Header = (props) => {
-  return (
-    <>
-      <h1>{props.course}</h1>
-    </>
-  )
-}
-
-const Content = (props) => {
-  return (
-    <>
-      {props.parts.map(part => <Part part={part} />)}
-    </>
-  )
-}
-
-const Part = (props) => {
-  return (
-    <>
-      <p>
-        {props.part.name} {props.part.exercises}
-      </p>
-    </>
-  )
-}
-
-const Total = (props) => {
-  let sum = props.parts.reduce(
-    (sum, part) => sum + part.exercises, 0)
-  return (
-    <>
-      <b>total of {sum} excersises</b>
-    </>
-  )
-}
+import Course from './components/Course'
 
 const App = () => {
   const courses = [
@@ -100,7 +49,8 @@ const App = () => {
 
   return (
     <div>
-      <Course courses={courses} />
+      <h1>Web development curriculum</h1>
+      {courses.map(course => <Course key={course.id} course={course} />)}
     </div>
   )
 }
