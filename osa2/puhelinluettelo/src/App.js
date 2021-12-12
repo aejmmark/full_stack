@@ -21,7 +21,7 @@ const Persons = ({persons, search, deletePerson}) => {
           number={person.number}
           />
           <button 
-          onClick={() => deletePerson(person)}>
+          onClick={() => deletePerson(person.name, person.id)}>
             delete
           </button>
         </ul>
@@ -67,11 +67,52 @@ const PersonForm = ({
   )
 }
 
+const Notification = ({message}) => {
+  if (message === null) {
+    return null
+  }
+
+  const success = {
+    color: 'green',
+    background: 'lightgrey',
+    fontSize: '20px',
+    borderStyle: 'solid',
+    borderRadius: '5px',
+    padding: '10px',
+    marginBottom: '10px'
+  }
+
+  const error = {
+    color: 'red',
+    background: 'lightgrey',
+    fontSize: '20px',
+    borderStyle: 'solid',
+    borderRadius: '5px',
+    padding: '10px',
+    marginBottom: '10px'
+  }
+
+  if (message.includes('already')) {
+    return (
+      <div style={error}>
+        {message}
+      </div>
+    )
+  } else {
+    return (
+      <div style={success}>
+        {message}
+      </div>
+    )
+  }
+}
+
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [search, setSearch] = useState('')
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -112,6 +153,10 @@ const App = () => {
         })
       setNewName('')
       setNewNumber('')
+      setMessage(`Added ${newName}`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
     } else {
       if (window.confirm(
         `${newName} is already added to phonebook, 
@@ -131,25 +176,41 @@ const App = () => {
                 ? person : returnedPerson
                 ))
             })
+            .catch(error => {
+              setMessage(`${newName} was already deleted`)
+              setPersons(persons.filter(item => item.id !== id))
+            })
           setNewName('')
           setNewNumber('')
+          setMessage(`${newName}'s number changed to ${newNumber}`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
       }
     }
   }
 
-  const deletePerson = (person) => {
-    if (window.confirm(`Delete ${person.name}?`)) {
-      personService.deleteWithId(person.id)
+  const deletePerson = (name, id) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      personService.deleteWithId(id)
         .then(response => {
           console.log(response)
         })
-      setPersons(persons.filter(item => item.name !== person.name))
+        .catch(error => {
+          setMessage(`${newName} was already deleted`)
+        })
+      setPersons(persons.filter(item => item.id !== id))
+      setMessage(`Deleted ${name}`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
     }
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter search={search} handleSearch={handleSearch} />
       <h2>Add new</h2>
       <PersonForm
