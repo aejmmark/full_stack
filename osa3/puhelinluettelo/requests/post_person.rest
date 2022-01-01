@@ -2,6 +2,6 @@ POST http://localhost:3001/api/persons
 content-type: application/json
 
 {
-    "name": "newName",
-    "number": "123567"
+    "name": "Steve",
+    "number": "12345678"
 }

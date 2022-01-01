@@ -92,15 +92,15 @@ const Notification = ({message}) => {
     marginBottom: '10px'
   }
 
-  if (message.includes('already')) {
+  if (message.includes('succesfully') || message.includes('Succesfully')) {
     return (
-      <div style={error}>
+      <div style={success}>
         {message}
       </div>
     )
   } else {
     return (
-      <div style={success}>
+      <div style={error}>
         {message}
       </div>
     )
@@ -151,9 +151,15 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
         })
+        .catch(error => {
+          setMessage(`${error.response.data.error}`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+        })
       setNewName('')
       setNewNumber('')
-      setMessage(`Added ${newName}`)
+      setMessage(`Succesfully added ${newName}`)
       setTimeout(() => {
         setMessage(null)
       }, 5000)
@@ -178,11 +184,14 @@ const App = () => {
             })
             .catch(error => {
               setMessage(`${newName} was already deleted`)
+              setTimeout(() => {
+                setMessage(null)
+              }, 5000)
               setPersons(persons.filter(item => item.id !== id))
             })
           setNewName('')
           setNewNumber('')
-          setMessage(`${newName}'s number changed to ${newNumber}`)
+          setMessage(`${newName}'s number succesfully changed to ${newNumber}`)
           setTimeout(() => {
             setMessage(null)
           }, 5000)
@@ -198,9 +207,12 @@ const App = () => {
         })
         .catch(error => {
           setMessage(`${newName} was already deleted`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
         })
       setPersons(persons.filter(item => item.id !== id))
-      setMessage(`Deleted ${name}`)
+      setMessage(`Succesfully deleted ${name}`)
       setTimeout(() => {
         setMessage(null)
       }, 5000)
