@@ -1,7 +1,0 @@
-POST https://fstackpl.herokuapp.com/api/persons
-content-type: application/json
-
-{
-    "name": "name",
-    "number": "123"
-}
