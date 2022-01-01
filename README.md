@@ -1,4 +1,5 @@
 # full_stack
 
 ## Puhelinluettelo App
-[https://fstackpl.herokuapp.com/]
+page: https://fstackpl.herokuapp.com/
+repo: https://github.com/aejmmark/full_stack_puhelinluettelo
