@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import personService from './services/persons'
 
-const Person = ({name, number}) => {
+const Person = ({ name, number }) => {
   return (
     <>
     <li>{name} {number}</li>
@@ -9,18 +9,18 @@ const Person = ({name, number}) => {
   )
 }
 
-const Persons = ({persons, search, deletePerson}) => {
+const Persons = ({ persons, search, deletePerson }) => {
   return (
     <>
       {persons.filter(item => item.name
-      .toLowerCase().includes(search)).map(
+        .toLowerCase().includes(search)).map(
         person =>
         <ul key={person.id}>
           <Person key={person.name}
           name={person.name}
           number={person.number}
           />
-          <button 
+          <button
           onClick={() => deletePerson(person.name, person.id)}>
             delete
           </button>
@@ -30,7 +30,7 @@ const Persons = ({persons, search, deletePerson}) => {
   )
 }
 
-const Filter = ({search, handleSearch}) => {
+const Filter = ({ search, handleSearch }) => {
   return (
     <div>
       name: <input
@@ -42,7 +42,11 @@ const Filter = ({search, handleSearch}) => {
 }
 
 const PersonForm = ({
-  addPerson, newName, handleNameChange, newNumber, handleNumberChange
+  addPerson,
+  newName,
+  handleNameChange,
+  newNumber,
+  handleNumberChange
 }) => {
   return (
     <form onSubmit={addPerson}>
@@ -67,7 +71,7 @@ const PersonForm = ({
   )
 }
 
-const Notification = ({message}) => {
+const Notification = ({ message }) => {
   if (message === null) {
     return null
   }
@@ -92,7 +96,8 @@ const Notification = ({message}) => {
     marginBottom: '10px'
   }
 
-  if (message.includes('succesfully') || message.includes('Succesfully')) {
+  if (message.includes('succesfully') ||
+  message.includes('Succesfully')) {
     return (
       <div style={success}>
         {message}
@@ -108,7 +113,7 @@ const Notification = ({message}) => {
 }
 
 const App = () => {
-  const [persons, setPersons] = useState([]) 
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [search, setSearch] = useState('')
@@ -139,8 +144,8 @@ const App = () => {
     let invalidName = false
     persons.forEach(
       (item) => {
-        invalidName = invalidName ? invalidName : item.name === newName
-    })
+        invalidName = invalidName || item.name === newName
+      })
     const personObject = {
       name: newName,
       number: newNumber
@@ -167,34 +172,34 @@ const App = () => {
       if (window.confirm(
         `${newName} is already added to phonebook, 
         replace the old number with a new one?`
-        )) {
-          let id = 0
-          persons.forEach(person => {
-            if (person.name === newName) {
-              id = person.id
-            }
+      )) {
+        let id = 0
+        persons.forEach(person => {
+          if (person.name === newName) {
+            id = person.id
+          }
+        })
+        personService
+          .update(id, personObject)
+          .then(returnedPerson => {
+            setPersons(persons.map(
+              person => person.id !== id ? person : returnedPerson
+            ))
           })
-          personService
-            .update(id, personObject)
-            .then(returnedPerson => {
-              setPersons(persons.map(
-                person => person.id !== id
-                ? person : returnedPerson
-                ))
-            })
-            .catch(error => {
-              setMessage(`${newName} was already deleted`)
-              setTimeout(() => {
-                setMessage(null)
-              }, 5000)
-              setPersons(persons.filter(item => item.id !== id))
-            })
-          setNewName('')
-          setNewNumber('')
-          setMessage(`${newName}'s number succesfully changed to ${newNumber}`)
-          setTimeout(() => {
-            setMessage(null)
-          }, 5000)
+          .catch(error => {
+            console.log(error)
+            setMessage(`${newName} was already deleted`)
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
+            setPersons(persons.filter(item => item.id !== id))
+          })
+        setNewName('')
+        setNewNumber('')
+        setMessage(`${newName}'s number succesfully changed to ${newNumber}`)
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
       }
     }
   }
@@ -206,6 +211,7 @@ const App = () => {
           console.log(response)
         })
         .catch(error => {
+          console.log(error)
           setMessage(`${newName} was already deleted`)
           setTimeout(() => {
             setMessage(null)
@@ -236,7 +242,6 @@ const App = () => {
       <Persons persons={persons} search={search} deletePerson={deletePerson}/>
     </div>
   )
-
 }
 
 export default App
