@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/users
+content-type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RlciIsImlkIjoiNjFkNzJiMWJlYTEyZDJhYzg5YTcyZmNhIiwiaWF0IjoxNjQxNjM0MTk5LCJleHAiOjE2NDE2Mzc3OTl9.OWOl26I730N_CvlJjGh5GLf0cQ4mtNeVz1co1tMSPSM
+
+{
+    "username": "tester",
+    "name": "Testy Testman",
+    "password": "testpass"
+}
