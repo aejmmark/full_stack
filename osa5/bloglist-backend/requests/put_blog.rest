@@ -1,0 +1,10 @@
+PUT http://localhost:3003/api/blogs/61d95c5db5373290e690d22a
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RlciIsImlkIjoiNjFkNzJiMWJlYTEyZDJhYzg5YTcyZmNhIiwiaWF0IjoxNjQxNjM0NDU3LCJleHAiOjE2NDE2MzgwNTd9.1LDKmqz4rSbCPy8d3dU8FUHTfaB7qRqC5BDff6SoV-Q
+
+{
+    "title": "HMM",
+    "author": "HMM",
+    "url": "http://url",
+    "likes": "12"
+}
