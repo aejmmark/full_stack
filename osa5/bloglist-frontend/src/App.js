@@ -1,77 +1,82 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Togglable from './components/Togglable'
+import LoginForm from './components/Loginform'
+import BlogForm from './components/Blogform'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [message, setMessage] = useState(null)
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  const visibilityRef = useRef()
 
-  const handleBlogCreation = async (event) => {
-    event.preventDefault()
+  const createBlog = async (newBlog) => {
     try {
-      const newBlog = {
-        title: title,
-        author: author,
-        url: url
-      }
-      const createdblog = await blogService.create(newBlog)
-      
-      setMessage(`${title} added`)
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-      setBlogs(blogs.concat(createdblog))
+      const createdBlog = await blogService.create(newBlog)
+      handleMessage(`${createdBlog.title} added`)
+      setBlogs(
+        blogs.concat(createdBlog)
+        .sort((first, second) => second.likes - first.likes)
+        )
+      visibilityRef.current.toggleVisibility()
     } catch (exception) {
-      setMessage('invalid blog')
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      handleMessage('invalid blog')
     }
   }
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
+  const handleLogin = async ({username, password}) => {
     try {
       const user = await loginService.login({
         username, password,
       })
-  
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
       ) 
       blogService.setToken(user.token)
       setUser(user)
-      setMessage(`${username} logged in`)
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
-      setUsername('')
-      setPassword('')
+      handleMessage(`${user.username} logged in`)
     } catch (exception) {
-      setMessage('invalid credentials')
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      handleMessage('invalid credentials')
     }
   }
 
   const handleLogout = async (event) => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
-    setMessage('logged out')
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+    handleMessage('logged out')
+  }
+
+  const handleMessage = (input) => {
+    setMessage(input)
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
+  }
+
+  const handleLike = async (blog) => {
+    try {
+      const response = await blogService.update(blog.id, blog)
+      const updatedBlogs = blogs.map(elem => elem.id === blog.id ? response : elem)
+      setBlogs(updatedBlogs.sort((first, second) => second.likes - first.likes))
+    } catch (exception) {
+      console.log('like failed');
+    }
+  }
+
+  const handleRemove = async (blog) => {
+    if (window.confirm(`Remove ${blog.title} by ${blog.author}?`)) {
+      try {
+        await blogService.remove(blog.id)
+        const updatedBlogs = blogs.filter(elem => elem.id !== blog.id)
+        setBlogs(updatedBlogs.sort((first, second) => second.likes - first.likes))
+      } catch (exception) {
+        console.log('remove failed');
+        
+      }
+    }
   }
 
   useEffect(() => {
@@ -89,112 +94,30 @@ const App = () => {
     }
   }, [])
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-          <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-          <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>      
-  )
-
-  const blogForm = () => (
-    <>
-    <p>{user.username} logged in</p>
-    <button onClick={handleLogout}>logout</button>
-    <p></p>
-    <form onSubmit={handleBlogCreation}>
-    <div>
-        title
-          <input
-          type="text"
-          value={title}
-          name="Title"
-          onChange={({ target }) => setTitle(target.value)}
-        />
-      </div>
-      <div>
-        author
-          <input
-          type="text"
-          value={author}
-          name="Author"
-          onChange={({ target }) => setAuthor(target.value)}
-        />
-      </div>
-      <div>
-        url
-          <input
-          type="text"
-          value={url}
-          name="Url"
-          onChange={({ target }) => setUrl(target.value)}
-        />
-      </div>
-      <button type="submit">create</button>
-    </form>
-    </>
-  )
-
-  const notification = () => {
-    const success = {
-      color: 'green',
-      background: 'lightgrey',
-      fontSize: '20px',
-      borderStyle: 'solid',
-      borderRadius: '5px',
-      padding: '10px',
-      marginBottom: '10px'
-    }
-  
-    const error = {
-      color: 'red',
-      background: 'lightgrey',
-      fontSize: '20px',
-      borderStyle: 'solid',
-      borderRadius: '5px',
-      padding: '10px',
-      marginBottom: '10px'
-    }
-  
-    if (message.includes('invalid')) {
-      return (
-        <div style={error}>
-          {message}
-        </div>
-      )
-    } else {
-      return (
-        <div style={success}>
-          {message}
-        </div>
-      )
-    }
-  }
-
   return (
     <div>
-      {message !== null && notification()}
-      {user === null && loginForm()}
-      {user !== null && blogForm()}
+      {message !== null && <Notification message={message}></Notification>}
+      {user === null ? 
+      <LoginForm handleLogin={handleLogin}>
+      </LoginForm>
+      :
+      <>
+      <p>{user.username} logged in</p>
+      <button onClick={handleLogout}>logout</button>
+      <p></p>
+      <Togglable buttonLabel='new blog' ref={visibilityRef}>
+        <BlogForm createBlog={createBlog} user={user}>
+        </BlogForm>
+      </Togglable>
+      </>
+      }
       <h2>blogs</h2>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+      {blogs
+      .sort((first, second) => second.likes - first.likes)
+      .map(blog =>
+        <Blog key={blog.id} blog={blog}
+        handleLike={handleLike} handleRemove={handleRemove}
+        user={user}/>
       )}
     </div>
   )

@@ -31,23 +31,25 @@ blogsRouter.post('/', async (request, response) => {
 
 blogsRouter.put('/:id', async (request, response) => {
   const { body } = request
-  const { user } = request
+  // const { user } = request
 
-  if (!user) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
+  // if (!user) {
+  //   return response.status(401).json({ error: 'token missing or invalid' })
+  // }
 
   const updatedBlog = {
     title: body.title,
     author: body.author,
     url: body.url,
     likes: body.likes,
+    user: body.user,
   }
 
-  const blogToBeEdited = await Blog.findById(request.params.id)
-  if (user._id.toString() !== blogToBeEdited.user.toString()) {
-    return response.status(401).json({ error: 'blog does not belong to this user' })
-  }
+  // const blogToBeEdited = await Blog.findById(request.params.id)
+  // if (blogToBeEdited.user === undefined
+  // || user._id.toString() !== blogToBeEdited.user.toString()) {
+  //   return response.status(401).json({ error: 'blog does not belong to this user' })
+  // }
 
   const updated = await Blog.findByIdAndUpdate(request.params.id, updatedBlog, { new: true })
   response.status(200).json(updated.toJSON())
