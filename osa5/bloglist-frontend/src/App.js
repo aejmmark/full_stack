@@ -19,22 +19,22 @@ const App = () => {
       handleMessage(`${createdBlog.title} added`)
       setBlogs(
         blogs.concat(createdBlog)
-        .sort((first, second) => second.likes - first.likes)
-        )
+          .sort((first, second) => second.likes - first.likes)
+      )
       visibilityRef.current.toggleVisibility()
     } catch (exception) {
       handleMessage('invalid blog')
     }
   }
 
-  const handleLogin = async ({username, password}) => {
+  const handleLogin = async ({ username, password }) => {
     try {
       const user = await loginService.login({
         username, password,
       })
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
-      ) 
+      )
       blogService.setToken(user.token)
       setUser(user)
       handleMessage(`${user.username} logged in`)
@@ -43,7 +43,7 @@ const App = () => {
     }
   }
 
-  const handleLogout = async (event) => {
+  const handleLogout = async () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
     handleMessage('logged out')
@@ -62,7 +62,7 @@ const App = () => {
       const updatedBlogs = blogs.map(elem => elem.id === blog.id ? response : elem)
       setBlogs(updatedBlogs.sort((first, second) => second.likes - first.likes))
     } catch (exception) {
-      console.log('like failed');
+      console.log('like failed')
     }
   }
 
@@ -73,8 +73,7 @@ const App = () => {
         const updatedBlogs = blogs.filter(elem => elem.id !== blog.id)
         setBlogs(updatedBlogs.sort((first, second) => second.likes - first.likes))
       } catch (exception) {
-        console.log('remove failed');
-        
+        console.log('remove failed')
       }
     }
   }
@@ -82,7 +81,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -97,28 +96,28 @@ const App = () => {
   return (
     <div>
       {message !== null && <Notification message={message}></Notification>}
-      {user === null ? 
-      <LoginForm handleLogin={handleLogin}>
-      </LoginForm>
-      :
-      <>
-      <p>{user.username} logged in</p>
-      <button onClick={handleLogout}>logout</button>
-      <p></p>
-      <Togglable buttonLabel='new blog' ref={visibilityRef}>
-        <BlogForm createBlog={createBlog} user={user}>
-        </BlogForm>
-      </Togglable>
-      </>
+      {user === null ?
+        <LoginForm handleLogin={handleLogin}>
+        </LoginForm>
+        :
+        <>
+          <p>{user.username} logged in</p>
+          <button onClick={handleLogout}>logout</button>
+          <p></p>
+          <Togglable buttonLabel='new blog' ref={visibilityRef}>
+            <BlogForm createBlog={createBlog} user={user}>
+            </BlogForm>
+          </Togglable>
+        </>
       }
       <h2>blogs</h2>
       {blogs
-      .sort((first, second) => second.likes - first.likes)
-      .map(blog =>
-        <Blog key={blog.id} blog={blog}
-        handleLike={handleLike} handleRemove={handleRemove}
-        user={user}/>
-      )}
+        .sort((first, second) => second.likes - first.likes)
+        .map(blog =>
+          <Blog key={blog.id} blog={blog}
+            handleLike={handleLike} handleRemove={handleRemove}
+            user={user}/>
+        )}
     </div>
   )
 }

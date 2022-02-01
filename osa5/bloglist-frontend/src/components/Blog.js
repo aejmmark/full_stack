@@ -1,5 +1,5 @@
-import React, {useState} from 'react'
-const Blog = ({blog, handleLike, user, handleRemove}) => {
+import React, { useState } from 'react'
+const Blog = ({ blog, handleLike, user, handleRemove }) => {
   const [expanded, setExpanded] = useState(false)
 
   const blogStyle = {
@@ -23,21 +23,21 @@ const Blog = ({blog, handleLike, user, handleRemove}) => {
 
   return (
     <div style={blogStyle}>
-    {expanded ?
-    <>
-    <button onClick={() => setExpanded(false)}>collapse</button>
-    <p>{blog.title}</p>
-    <p>{blog.author}</p>
-    <p>{blog.url}</p>
-    <p>{blog.likes}</p>
-    <button onClick={() => submitLike()}>like</button>
-    {user !== null && user.id === blog.user ? <button onClick={() => handleRemove(blog)}>remove</button> : <></>}
-    </>
-    :
-    <>
-    <p>{blog.title}</p><button onClick={() => setExpanded(true)}>expand</button>
-    </>
-    }
+      {expanded ?
+        <>
+          <button onClick={() => setExpanded(false)}>collapse</button>
+          <p>{blog.title}</p>
+          <p>{blog.author}</p>
+          <p>{blog.url}</p>
+          <p>{blog.likes}</p>
+          <button onClick={() => submitLike()}>like</button>
+          {user !== null && user.id === blog.user ? <button onClick={() => handleRemove(blog)}>remove</button> : <></>}
+        </>
+        :
+        <>
+          <p>{blog.title}</p><button onClick={() => setExpanded(true)}>expand</button>
+        </>
+      }
     </div>
   )
 }
