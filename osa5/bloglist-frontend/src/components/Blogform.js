@@ -5,6 +5,7 @@ const BlogForm = ({ createBlog, user }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+
   const addBlog = (event) => {
     event.preventDefault()
     createBlog({
@@ -20,10 +21,11 @@ const BlogForm = ({ createBlog, user }) => {
 
   return (
     <>
-      <form onSubmit={addBlog}>
+      <form id='form' onSubmit={addBlog}>
         <div>
         title
           <input
+            id='title'
             value={title}
             onChange={({ target }) => setTitle(target.value)}
           />
@@ -31,6 +33,7 @@ const BlogForm = ({ createBlog, user }) => {
         <div>
         author
           <input
+            id='author'
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
           />
@@ -38,6 +41,7 @@ const BlogForm = ({ createBlog, user }) => {
         <div>
         url
           <input
+            id='url'
             value={url}
             onChange={({ target }) => setUrl(target.value)}
           />
@@ -50,7 +54,7 @@ const BlogForm = ({ createBlog, user }) => {
 
 BlogForm.propTypes = {
   createBlog: PropTypes.func.isRequired,
-  user: PropTypes.string.isRequired
+  user: PropTypes.object.isRequired
 }
 
 export default BlogForm

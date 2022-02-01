@@ -26,16 +26,15 @@ const Blog = ({ blog, handleLike, user, handleRemove }) => {
       {expanded ?
         <>
           <button onClick={() => setExpanded(false)}>collapse</button>
-          <p>{blog.title}</p>
-          <p>{blog.author}</p>
+          <p>{blog.title} by {blog.author}</p>
           <p>{blog.url}</p>
-          <p>{blog.likes}</p>
+          <p>likes: {blog.likes}</p>
           <button onClick={() => submitLike()}>like</button>
           {user !== null && user.id === blog.user ? <button onClick={() => handleRemove(blog)}>remove</button> : <></>}
         </>
         :
         <>
-          <p>{blog.title}</p><button onClick={() => setExpanded(true)}>expand</button>
+          <p>{blog.title} by {blog.author}</p><button onClick={() => setExpanded(true)}>expand</button>
         </>
       }
     </div>
