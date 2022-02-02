@@ -102,7 +102,7 @@ const App = () => {
         :
         <>
           <p>{user.username} logged in</p>
-          <button onClick={handleLogout}>logout</button>
+          <button id='logout-button' onClick={handleLogout}>logout</button>
           <p></p>
           <Togglable buttonLabel='new blog' ref={visibilityRef}>
             <BlogForm createBlog={createBlog} user={user}>
@@ -111,13 +111,15 @@ const App = () => {
         </>
       }
       <h2>blogs</h2>
-      {blogs
-        .sort((first, second) => second.likes - first.likes)
-        .map(blog =>
-          <Blog key={blog.id} blog={blog}
-            handleLike={handleLike} handleRemove={handleRemove}
-            user={user}/>
-        )}
+      <div id='blogs'>
+        {blogs
+          .sort((first, second) => second.likes - first.likes)
+          .map(blog =>
+            <Blog key={blog.id} blog={blog}
+              handleLike={handleLike} handleRemove={handleRemove}
+              user={user}/>
+          )}
+      </div>
     </div>
   )
 }
