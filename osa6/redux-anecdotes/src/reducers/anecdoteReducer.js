@@ -5,10 +5,6 @@ const anecdoteReducer = (state = [], action) => {
     case 'INIT_ANECDOTES':
       return action.data
     case 'VOTE':
-      // return state.map(anecdote => anecdote.id === action.data.id
-      // ? {content: anecdote.content, id: anecdote.id, votes: anecdote.votes + 1}
-      // : anecdote
-      // )
       return state.map(anecdote => anecdote.id === action.data.id
          ? action.data
          : anecdote
