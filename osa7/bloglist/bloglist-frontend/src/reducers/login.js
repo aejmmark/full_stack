@@ -1,7 +1,7 @@
 import loginService from '../services/login'
 import blogService from '../services/blogs'
 
-const userReducer = (state = {}, action) => {
+const loginReducer = (state = {}, action) => {
   switch (action.type) {
     case 'SET_USER':
       return action.data
@@ -48,4 +48,4 @@ export const returningUser = (userJSON) => {
   }
 }
 
-export default userReducer
+export default loginReducer
